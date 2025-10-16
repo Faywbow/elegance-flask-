@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+<section class="hero">
+8
+<h2 class="hero-title">Élégance &amp; Discrétion</h2>
+<p class="hero-sub">Des expériences exclusives et raffinées, pensées pour
+vous.</p>
+<a href="{{ url_for('register') }}" class="btn primary">Créez un compte</a>
+</section>
+<section class="services">
+<h3>Mes services</h3>
+<p>Un descriptif neutre et professionnel. Utilise cette section pour
+expliquer ton offre (réservations, club, événements privés, etc.).</p>
+</section>
+{% endblock %}
