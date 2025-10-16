@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<section class="dashboard">
+<h2>Bienvenue, {{ current_user.username }}</h2>
+<div class="card">
+<h3>Nouvelle réservation</h3>
+<form method="POST">
+ {{ form.hidden_tag() }}
+<label>{{ form.title.label }}{{ form.title() }}</label>
+<label>{{ form.details.label }}{{ form.details(rows=4) }}</label>
+ {{ form.submit(class="btn primary") }}
+</form>
+</div>
+<div class="card">
+<h3>Mes réservations</h3>
+ {% if reservations %}
+<ul class="reserve-list">
+ {% for r in reservations %}
+<li><strong>{{ r.title }}</strong>
+<small>{{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</
+small><p>{{ r.details }}</p></li>
+ {% endfor %}
+</ul>
+ {% else %}
+<p>Tu n'as pas encore de réservations.</p>
+ {% endif %}
+</div>
+<div class="card">
+<h3>Accès Premium</h3>
+<p>Obtenez des fonctionnalités supplémentaires et priorités.</p>
+<form action="{{ url_for('checkout') }}" method="POST">
+<input type="hidden" name="amount" value="2000"> <!-- 20.00 € -->
+<button class="btn primary" type="submit">Payer 20 €</button>
+</form>
+</div>
+</section>
+{% endblock %}
