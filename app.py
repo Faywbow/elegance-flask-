@@ -38,7 +38,8 @@ def register():
 form = RegisterForm()
 if form.validate_on_submit():
 if User.query.filter((User.email == form.email.data) |
-4
+
+                     
 (User.username == form.username.data)).first():
 flash('Un utilisateur avec ce nom ou email existe déjà.',
 'warning')
@@ -86,7 +87,8 @@ return redirect(url_for('dashboard'))
 reservations =
 Reservation.query.filter_by(user_id=current_user.id).order_by(Reservation.created_at.desc()).areturn render_template('dashboard.html', form=form,
 reservations=reservations)
-5
+
+
 # Stripe checkout route
 @app.route('/checkout', methods=['POST'])
 @login_required
