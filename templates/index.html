@@ -1,16 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Accueil{% endblock %}
-{% block content %}
-<section class="hero">
 
-<h2 class="hero-title">Élégance &amp; Discrétion</h2>
-<p class="hero-sub">Des expériences exclusives et raffinées, pensées pour
-vous.</p>
-<a href="{{ url_for('register') }}" class="btn primary">Créez un compte</a>
-</section>
-<section class="services">
-<h3>Mes services</h3>
-<p>Un descriptif neutre et professionnel. Utilise cette section pour
-expliquer ton offre (réservations, club, événements privés, etc.).</p>
-</section>
+{% block content %}
+    <header class="hero">
+        <h1>Élégance & Discrétion</h1>
+        <p>Des expériences exclusives et raffinées, pensées pour vous.</p>
+        <a href="{{ url_for('contact') }}" class="btn-primary">Réservez maintenant</a>
+    </header>
+
+    <section id="apercus">
+        <h2>Mes Aperçus</h2>
+        <div class="cards">
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='img/image1.jpg') }}" alt="Photo 1" class="zoomable">
+                <h3>Photo</h3>
+                <div class="actions">
+                    <a href="{{ url_for('shop') }}" class="btn-purple">Voir</a>
+                    <a href="{{ url_for('contact') }}" class="btn-dark">Contact</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='img/image2.jpg') }}" alt="Photo 2" class="zoomable">
+                <h3>Photo</h3>
+                <div class="actions">
+                    <a href="{{ url_for('shop') }}" class="btn-purple">Voir</a>
+                    <a href="{{ url_for('contact') }}" class="btn-dark">Contact</a>
+                </div>
+            </div>
+
+            </div>
+    </section>
+
+    <section id="reserve">
+        <h2>Réservez votre Expérience</h2>
+        <p>Contactez-nous pour organiser une rencontre exclusive.</p>
+        <a href="{{ url_for('contact') }}" class="btn-primary">M'écrire</a>
+    </section>
 {% endblock %}
