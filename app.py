@@ -125,3 +125,16 @@ def init_db():
 # --- Lancement ---
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+@app.route("/shop")
+def shop():
+    return render_template("shop.html")
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
