@@ -1,19 +1,30 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-# Assurez-vous d'importer vos classes de formulaires depuis votre fichier forms.py
+
+# Importez vos classes de formulaires et de modèles depuis leurs fichiers respectifs
 from forms import LoginForm, RegisterForm
+from models import User 
 
 app = Flask(__name__)
 
-# La configuration est souvent dans un fichier config.py, mais pour l'exemple :
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# Assurez-vous que ces configurations correspondent à votre fichier config.py ou à vos variables d'environnement
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db' # Ou votre URL de base de données Render
 app.config['SECRET_KEY'] = 'une_cle_secrete_tres_difficile_a_deviner'
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
-# Optionnel : redirige les utilisateurs non connectés vers la page de connexion
-login_manager.login_view = 'login'
+login_manager.login_view = 'login' # Redirige les utilisateurs non connectés vers la page de connexion
+
+# --- CONFIGURATION ESSENTIELLE DE FLASK-LOGIN ---
+# Cette fonction est obligatoire. Elle explique à Flask-Login comment
+# retrouver un utilisateur spécifique à partir de l'ID stocké dans la session.
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+# ----------------------------------------------------
+
+# --- VOS ROUTES ---
 
 @app.route('/')
 def index():
@@ -29,33 +40,32 @@ def contact():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Crée une instance du formulaire de connexion
     form = LoginForm()
-    # Ici, vous ajouterez la logique pour vérifier les informations de l'utilisateur
+    # Mettez votre logique de validation et de connexion ici
     # if form.validate_on_submit():
-    #     # ... logique de connexion ...
-    #     return redirect(url_for('dashboard'))
+    #     ...
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # Crée une instance du formulaire d'inscription
     form = RegisterForm()
-    # Ici, vous ajouterez la logique pour créer un nouvel utilisateur
+    # Mettez votre logique de création d'utilisateur ici
     # if form.validate_on_submit():
-    #     # ... logique d'inscription ...
-    #     return redirect(url_for('login'))
+    #     ...
     return render_template('register.html', form=form)
 
-# Gestionnaire pour les erreurs 500 (Erreur interne du serveur)
+# --- GESTION DES ERREURS ---
+
 @app.errorhandler(500)
 def internal_error(error):
-    # Optionnel : vous pouvez ajouter un db.session.rollback() ici pour annuler les transactions en cas d'erreur
-    # db.session.rollback()
-    return render_template('error.html', message="Une erreur interne est survenue."), 500
+    # En cas d'erreur interne, cette page sera affichée
+    return render_template('error.html', message="Une erreur interne inattendue est survenue."), 500
 
-# Le bloc if __name__ == '__main__': n'est pas nécessaire pour le déploiement sur Render,
-# car Gunicorn est utilisé pour lancer l'application.
-# Vous pouvez le garder pour tester en local.
+@app.errorhandler(404)
+def page_not_found(error):
+    # Pour les pages non trouvées (erreur 404)
+    return render_template('error.html', message="Cette page n'existe pas."), 404
+
+# Cette partie n'est pas utilisée par Render mais est utile pour les tests locaux
 if __name__ == '__main__':
     app.run(debug=True)
