@@ -1,43 +1,220 @@
-:root{
---bg:#071028;
---muted:#9aa3b2;
---accent:#a65bff;
---white:#ffffff;
---card:#0e1623;
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-*{box-sizing:border-box;font-family: "Inter", "Helvetica Neue", Arial, sansserif}
-body{
-margin:0;
-background:linear-gradient(180deg, var(--bg) 0%, #020612 100%);
-color:var(--muted);
-min-height:100vh;
-}
-.container{width:90%;max-width:900px;margin:0 auto;padding:20px}
-.site-header{padding:22px 0}
-.brand{color:var(--white);font-size:20px;margin:0 0 8px}
 
-.site-header nav a{color:var(--muted);margin-left:12px;textdecoration:none;font-weight:600}
-.hero{text-align:center;padding:60px 10px 40px}
-.hero-title{color:var(--white);font-size:48px;margin:0 0 12px}
-.hero-sub{color:var(--muted);margin-bottom:18px;font-size:16px}
-.btn{display:inline-block;padding:12px 22px;border-radius:12px;textdecoration:none;font-weight:700;cursor:pointer;border:0}
-.btn.primary{background:linear-gradient(90deg,var(--
-accent),#7b4dff);color:white;box-shadow:0 6px 18px rgba(166,91,255,0.14)}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,
-255,255,0.01));border-radius:14px;padding:18px;margin:18px 0;color:var(--
-muted);box-shadow: 0 6px 20px rgba(2,6,23,0.6)}
-.auth-card{max-width:520px;margin:24px auto;padding:24px}
-label{display:block;margin-bottom:10px;color:var(--muted)}
-input[type="text"], input[type="email"], input[type="password"],
-textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid
-rgba(255,255,255,0.04);background:transparent;color:var(--white);margin-top:
-6px;outline:none}
-.flashes .flash{padding:10px;border-radius:8px;margin-bottom:8px}
-.flash.success{background:rgba(30,150,80,0.12); color:#bfeac4}
-.flash.warning{background:rgba(240,180,40,0.08)}
-.flash.danger{background:rgba(220,70,70,0.08)}
-.reserve-list{list-style:none;padding:0;margin:0}
-.reserve-list li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,
-0.02); color:var(--muted)}
-.site-footer{padding:26px 0;text-align:center;color:#243245}
-@media (max-width:600px){.hero-title{font-size:34px}}
+/* Couleurs principales */
+:root {
+  --bg-dark: #121212;      /* Fond noir très foncé */
+  --card-dark: #1e1e1e;    /* Cartes légèrement plus claires que le fond */
+  --text-light: #f5f5f5;  /* Texte clair */
+  --text-muted: #b3b3b3;  /* Texte secondaire */
+  --primary: #8a2be2;     /* Violet intense pour les boutons */
+  --primary-hover: #9932cc; /* Hover violet foncé */
+  --secondary: #333333;   /* Bouton gris foncé pour "Contact" */
+  --secondary-hover: #444444;
+}
+
+/* Global */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* En-tête du site (à styliser pour le nouveau look si nécessaire) */
+.site-header {
+    background: #0a0a0a;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+.site-header h1 {
+    font-size: 1.5rem;
+}
+.site-header nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: 1.5rem;
+    transition: color 0.3s;
+}
+.site-header nav a:hover {
+    color: var(--primary);
+}
+
+
+/* Header (Section Héros) */
+.hero {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: var(--bg-dark);
+  border-bottom: 1px solid var(--secondary);
+}
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+.hero p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Boutons */
+.btn-primary {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(138, 43, 226, 0.4);
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Sections (Aperçus et Réserve) */
+section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: white;
+}
+section p {
+  color: var(--text-muted);
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+}
+
+/* Cartes profils (Mes Aperçus) */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.card {
+  background: var(--card-dark);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: left;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(138, 43, 226, 0.3);
+}
+.card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  cursor: zoom-in; /* Indicateur de zoom */
+}
+.card h3 {
+  margin: 1rem 1rem 0.5rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.actions {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+.btn-purple, .btn-dark {
+  flex: 1;
+  text-align: center;
+  padding: 0.8rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.btn-purple {
+  background: var(--primary);
+  color: white;
+}
+.btn-purple:hover {
+  background: var(--primary-hover);
+}
+.btn-dark {
+  background: var(--secondary);
+  color: var(--text-light);
+}
+.btn-dark:hover {
+  background: var(--secondary-hover);
+}
+
+/* Footer */
+footer {
+  background: #0a0a0a;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+}
+
+/* === MODAL IMAGE ZOOM === */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.95);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 90vh;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  animation: zoomIn 0.3s ease-in-out;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: #fff;
+  font-size: 45px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.close:hover {
+  color: var(--primary);
+}
+
+@keyframes zoomIn {
+  from {transform: scale(0.8); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
