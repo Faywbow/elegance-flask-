@@ -52,6 +52,7 @@ def register():
     # Mettez votre logique de création d'utilisateur ici
     # if form.validate_on_submit():
     #     ...
+    # LA CORRECTION EST ICI : on passe bien `form=form` au template
     return render_template('register.html', form=form)
 
 # --- GESTION DES ERREURS ---
