@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}S'inscrire{% endblock %}
+{% block content %}
+<div class="card auth-card">
+<h2>Créer un compte</h2>
+<form method="POST">
+ {{ form.hidden_tag() }}
+<label>{{ form.username.label }}{{ form.username(size=32) }}</label>
+<label>{{ form.email.label }}{{ form.email(size=32) }}</label>
+<label>{{ form.password.label }}{{ form.password(size=32) }}</label>
+<label>{{ form.confirm.label }}{{ form.confirm(size=32) }}</label>
+ {{ form.submit(class="btn primary") }}
+</form>
+</div>
+{% endblock %}
