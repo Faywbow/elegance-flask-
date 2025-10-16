@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elegance ✨</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <header>
-        <h1>✨ Elegance ✨</h1>
-        <nav>
-            <a href="{{ url_for('index') }}">Accueil</a>
-            <a href="{{ url_for('shop') }}">Boutique</a>
-            <a href="{{ url_for('contact') }}">Contact</a>
+  <header>
+    <h1>✨ Elegance ✨</h1>
+    <nav>
+      <a href="{{ url_for('index') }}">Accueil</a>
+      <a href="{{ url_for('shop') }}">Boutique</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+      <a href="{{ url_for('login') }}">Connexion</a>
+      <a href="{{ url_for('register') }}">Créer un compte</a>
+    </nav>
+  </header>
 
-            {% if current_user is defined and current_user.is_authenticated %}
-                <a href="{{ url_for('logout') }}">Se déconnecter</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Connexion</a>
-            {% endif %}
-        </nav>
-    </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-
-    <footer>
-        <p>© 2025 Elegance. Tous droits réservés.</p>
-    </footer>
+  <footer>
+    <p>© 2025 Elegance. Tous droits réservés.</p>
+  </footer>
 </body>
 </html>
