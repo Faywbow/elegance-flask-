@@ -1,0 +1,6 @@
+venv/
+instance/app.sqlite
+__pycache__/
+.env
+.env.*
+.DS_Store
