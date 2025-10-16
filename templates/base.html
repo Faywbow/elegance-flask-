@@ -1,29 +1,40 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elegance ✨</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-  <header>
-    <h1>✨ Elegance ✨</h1>
-    <nav>
-      <a href="{{ url_for('index') }}">Accueil</a>
-      <a href="{{ url_for('shop') }}">Boutique</a>
-      <a href="{{ url_for('contact') }}">Contact</a>
-      <a href="{{ url_for('login') }}">Connexion</a>
-      <a href="{{ url_for('register') }}">Créer un compte</a>
-    </nav>
-  </header>
+{% extends "base.html" %}
 
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+{% block content %}
+    <header class="hero">
+        <h1>Élégance & Discrétion</h1>
+        <p>Des expériences exclusives et raffinées, pensées pour vous.</p>
+        <a href="{{ url_for('contact') }}" class="btn-primary">Réservez maintenant</a>
+    </header>
 
-  <footer>
-    <p>© 2025 Elegance. Tous droits réservés.</p>
-  </footer>
-</body>
-</html>
+    <section id="apercus">
+        <h2>Mes Aperçus</h2>
+        <div class="cards">
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='img/image1.jpg') }}" alt="Photo 1" class="zoomable">
+                <h3>Photo</h3>
+                <div class="actions">
+                    <a href="{{ url_for('shop') }}" class="btn-purple">Voir</a>
+                    <a href="{{ url_for('contact') }}" class="btn-dark">Contact</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='img/image2.jpg') }}" alt="Photo 2" class="zoomable">
+                <h3>Photo</h3>
+                <div class="actions">
+                    <a href="{{ url_for('shop') }}" class="btn-purple">Voir</a>
+                    <a href="{{ url_for('contact') }}" class="btn-dark">Contact</a>
+                </div>
+            </div>
+
+            </div>
+    </section>
+
+    <section id="reserve">
+        <h2>Réservez votre Expérience</h2>
+        <p>Contactez-nous pour organiser une rencontre exclusive.</p>
+        <a href="{{ url_for('contact') }}" class="btn-primary">M'écrire</a>
+    </section>
+{% endblock %}
