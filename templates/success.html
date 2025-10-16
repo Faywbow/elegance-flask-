@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Paiement réussi{% endblock %}
+{% block content %}
+<div class="card">
+<h2>Merci !</h2>
+<p>Votre paiement a été effectué avec succès </p>
+<a class="btn primary" href="{{ url_for('dashboard') }}">Retour au tableau
+de bord</a>
+</div>
+{% endblock %}
