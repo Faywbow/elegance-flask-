@@ -1,56 +1,91 @@
-# app.py
 import os
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 import stripe
 
+# Initialisation de l’application Flask
 app = Flask(__name__)
 
-# --- Configuration Flask & Base de données ---
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'devkey')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# Configuration générale
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", "dev_secret")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///database.db").replace("postgres://", "postgresql://")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Base de données
 db = SQLAlchemy(app)
 
-# --- Modèle de base de données ---
-class User(db.Model):
+# Stripe
+stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY")
+
+# Flask-Login
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
+
+# --- Modèle utilisateur ---
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
 
-# --- Stripe configuration ---
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+# --- Gestion du chargement utilisateur ---
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-# --- Création automatique des tables au démarrage ---
-with app.app_context():
-    db.create_all()
-    print("✅ Tables créées ou déjà existantes dans la base PostgreSQL")
-
-# --- Routes ---
+# --- Routes principales ---
 @app.route("/")
 def index():
     return render_template("index.html", stripe_public_key=STRIPE_PUBLIC_KEY)
 
-@app.route("/register", methods=["POST"])
+@app.route("/shop")
+def shop():
+    return render_template("shop.html")
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+# --- Authentification ---
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect(url_for("index"))
+        flash("Email ou mot de passe incorrect.")
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("index"))
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    name = request.form.get("name")
-    email = request.form.get("email")
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash("Cet utilisateur existe déjà.")
+            return redirect(url_for("register"))
 
-    if not name or not email:
-        return "Erreur : nom et email requis", 400
+        new_user = User(email=email, password=generate_password_hash(password, method="sha256"))
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Inscription réussie ! Vous pouvez vous connecter.")
+        return redirect(url_for("login"))
+    return render_template("register.html")
 
-    # Vérifie si l'utilisateur existe déjà
-    existing = User.query.filter_by(email=email).first()
-    if existing:
-        return "Cet email est déjà enregistré", 400
-
-    new_user = User(name=name, email=email)
-    db.session.add(new_user)
-    db.session.commit()
-    return redirect(url_for('index'))
-
+# --- Paiement Stripe ---
 @app.route("/create-checkout-session", methods=["POST"])
 def create_checkout_session():
     try:
@@ -59,20 +94,18 @@ def create_checkout_session():
             line_items=[{
                 'price_data': {
                     'currency': 'eur',
-                    'product_data': {
-                        'name': 'Service Premium',
-                    },
-                    'unit_amount': 5000,  # prix en centimes = 50,00 €
+                    'product_data': {'name': 'Produit Élégance'},
+                    'unit_amount': 1999,  # 19,99€
                 },
                 'quantity': 1,
             }],
             mode='payment',
-            success_url=url_for('success', _external=True),
+            success_url=url_for('success', _external=True) + '?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=url_for('cancel', _external=True),
         )
-        return jsonify({'id': checkout_session.id})
+        return redirect(checkout_session.url, code=303)
     except Exception as e:
-        return jsonify(error=str(e)), 403
+        return str(e)
 
 @app.route("/success")
 def success():
@@ -82,6 +115,13 @@ def success():
 def cancel():
     return render_template("cancel.html")
 
-# --- Lancement de l'app ---
+# --- Commande création BDD ---
+@app.cli.command("init-db")
+def init_db():
+    """Initialise la base de données."""
+    db.create_all()
+    print("✅ Base de données initialisée avec succès.")
+
+# --- Lancement ---
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
